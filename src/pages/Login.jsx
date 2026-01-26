@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
 import { auth } from "../services/auth";
+import googleIcon from "../assets/google.png";
+import facebookIcon from "../assets/facebook.png";
+import RegisterModal from "../components/ui/RegisterModal";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,6 +16,11 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [toast, setToast] = useState("");
+  const [openRegister, setOpenRegister] = useState(false);
+
+   const handleRegister = async ({ name, email, password }) => {
+    await api.post("/register", { name, email, password });
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -192,10 +200,11 @@ const Login = () => {
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
-                className="flex items-center justify-center py-3 px-4 rounded-xl border-2 transition-all hover:border-gray-400"
+                className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 transition-all hover:border-gray-400"
                 style={{ borderColor: "#e2e8f0" }}
                 onClick={() => setToast("Google login is UI only.")}
               >
+                <img src={googleIcon} alt="Google" className="w-5 h-5 shrink-0" />
                 <span className="text-sm font-medium" style={{ color: "#4a5568" }}>
                   Google
                 </span>
@@ -203,10 +212,11 @@ const Login = () => {
 
               <button
                 type="button"
-                className="flex items-center justify-center py-3 px-4 rounded-xl border-2 transition-all hover:border-gray-400"
+                className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 transition-all hover:border-gray-400"
                 style={{ borderColor: "#e2e8f0" }}
                 onClick={() => setToast("Facebook login is UI only.")}
               >
+                <img src={facebookIcon} alt="Facebook" className="w-5 h-5 shrink-0" />
                 <span className="text-sm font-medium" style={{ color: "#4a5568" }}>
                   Facebook
                 </span>
@@ -217,16 +227,33 @@ const Login = () => {
           <div className="text-center mt-8">
             <p className="text-sm" style={{ color: "#718096" }}>
               Don&apos;t have an account?{" "}
-              <button
-                type="button"
-                className="font-semibold"
-                style={{ color: "#667eea" }}
-                onClick={() => setToast("Registration screen not implemented.")}
-              >
-                Sign up now
-              </button>
+             <button
+                  type="button"
+                  onClick={() => setOpenRegister(true)}
+                  disabled={loading}
+                  className="
+                    font-semibold
+                    text-[#667eea]
+                    hover:text-[#5a67d8]
+                    hover:underline
+                    transition-colors
+                    duration-200
+                    disabled:opacity-60
+                    disabled:cursor-not-allowed
+                  "
+                >
+                  Sign up now
+                </button>
+
             </p>
           </div>
+
+          <RegisterModal
+            open={openRegister}
+            onClose={() => setOpenRegister(false)}
+            onSubmit={handleRegister}
+          />
+          
         </div>
       </main>
     </div>
